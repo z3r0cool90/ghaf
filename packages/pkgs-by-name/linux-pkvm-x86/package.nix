@@ -19,8 +19,13 @@ let
       KVM = yes;
       KVM_INTEL = yes;
       PKVM_INTEL = yes;
-      PKVM_INTEL_VE_MMIO = yes;
-      PKVM_INTEL_VE_EMULATION = yes;
+      # VMXROOT_MMIO instead of VE_MMIO: on hosts without APICv the LAPIC
+      # #VE conversion fails and the VE_MMIO fallback cannot read protected
+      # guest memory, so the guest dies at 33ms in native_apic_mem_read.
+      # VMXROOT gives the host emulator a hyp-assisted read. See the kernel
+      # fixes in z3r0cool90/pKVM-x86-IA (cr3-fix, share-fix) that this needs.
+      PKVM_INTEL_VE_MMIO = no;
+      PKVM_INTEL_VMXROOT_MMIO = yes;
       PKVM_INTEL_DEBUG = yes;
       PKVM_INTEL_FORCE_PROTECTED_VM = yes;
       PKVM_INTEL_PROTECTED_VM_COREDUMP = yes;
@@ -38,10 +43,10 @@ let
       modDirVersion = kernelVersion;
 
       src = pkgs.fetchFromGitHub {
-        owner = "elmankku";
+        owner = "z3r0cool90";
         repo = "pKVM-x86-IA";
-        rev = "0477fe43609d6254721a9a5c69dbc1337d8ba860";
-        sha256 = "sha256-VT9cjT+4/Ag/h7oPMgqFtciamcTZJNjcgt4TDEo5Z1k=";
+        rev = "1cb4a40ecfcd";  # z3r0cool90/pKVM-x86-IA: 0477fe43 + cr3-fix + share-fix
+        sha256 = "sha256-eeBsaj/k9ldVINzXRFctMRk/+iTz4hS5lQ30gfDS3xo=";
       };
       structuredExtraConfig = variants.${variant};
 
