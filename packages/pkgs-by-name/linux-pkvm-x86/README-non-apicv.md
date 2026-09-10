@@ -1,4 +1,56 @@
 # pKVM protected guests on hosts without APICv
+## Quick start
+
+**First, check whether your machine even needs this.** These changes only apply
+to a host *without* hardware APICv:
+
+```bash
+sudo modprobe msr
+cat /sys/module/kvm_intel/parameters/enable_apicv
+```
+
+- `N` → this branch is for you; the VMXROOT setup below applies.
+- `Y` → you do **not** need this branch. Use stock ghaf with the default VE_MMIO.
+
+**Build and run** (fresh checkout):
+
+```bash
+git clone -b pkvm-non-apicv-fixes https://github.com/z3r0cool90/ghaf.git
+cd ghaf
+
+export TMPDIR=/nix/tmp USE_TMPDIR=1
+nix build .#nixosConfigurations.vm-debug-pkvm-nogui.config.system.build.vm \
+  -o result --cores 2 -j 1
+
+cp "$(readlink -f result/bin/run-ghaf-host-vm)" run.sh
+chmod +w run.sh
+# no-APICv host: overcommit vCPUs and give the host VM enough RAM
+sed -i 's/-m 8192/-m 6656/; s/-smp 4/-smp 8/' run.sh
+./run.sh
+```
+
+Nothing else needs editing: `package.nix` already points at the kernel fork
+(`z3r0cool90/pKVM-x86-IA @ 1cb4a40`, which carries cr3-fix and share-fix) and
+selects `PKVM_INTEL_VMXROOT_MMIO`. The kernel is fetched and built automatically.
+
+**If you already have a ghaf checkout**, pull the branch instead of cloning:
+
+```bash
+git remote add panos https://github.com/z3r0cool90/ghaf.git
+git fetch panos
+git checkout panos/pkvm-non-apicv-fixes
+```
+
+**Notes on the runtime flags:**
+
+- `-smp 8` on a 4-core host lets the scheduler interleave vCPU and QEMU I/O
+  threads; with `-smp 4` the I/O threads starve and `/dev/vda` times out.
+- `-m 6656` leaves headroom on an 8 GB box. Four guests want ~5.5 GB; with less,
+  expect the largest guest to be OOM-killed.
+- Boot is slow on a no-APICv host (every LAPIC access is emulated) — a full boot
+  to login for four guests can take 20–40 minutes. This is expected, not a hang.
+
+---
 
 This document explains the `pkvm-non-apicv-fixes` changes: what they fix,
 **where each one applies, and where it is not needed**. It covers both this
