@@ -121,10 +121,22 @@ let
                 hardware.x86_64.common.enable = true;
                 hardware.tpm2.enable = true;
 
+                # No physical devices to pass through in a nested VM target.
+                # With net-vm on crosvm this would otherwise trip the crosvm
+                # PCI-passthrough assertion (it needs vhotplug + a control
+                # socket). The TPM test needs none of that.
+                hardware.passthrough.mode = lib.mkIf withPkvm (lib.mkForce "none");
+
                 microvm-boot.enable = lib.mkForce false;
 
                 virtualization = {
                   pkvm.enable = withPkvm;
+
+                  # TPM passthrough to a protected guest goes through crosvm's
+                  # virtio-tpm (--tpm-device); the QEMU path uses -tpmdev and is
+                  # wired separately in vm-tpm.nix. net-vm is the VM that holds
+                  # the LUKS key, so it is the one that needs the TPM.
+                  vmConfig.sysvms.netvm.vmm = lib.mkIf withPkvm "crosvm";
 
                   microvm-host = {
                     enable = true;
@@ -349,6 +361,9 @@ let
     (vm "vm" "debug-pkvm-nogui" false)
     (vm "vm" "release" true)
     (vm "vm" "release-pkvm" true)
+    # nogui release variant: release profile enables storage encryption, which is
+    # what turns on TPM passthrough, without the 20GB the graphics pkvm variant needs.
+    (vm "vm" "release-pkvm-nogui" false)
     (vm "vmware" "debug" true)
   ];
 in
