@@ -17,11 +17,10 @@
           src = inputs.ghaf-crosvm;
           cargoDeps = prev.rustPlatform.fetchCargoVendor {
             src = inputs.ghaf-crosvm;
-            hash = "sha256-lU30pTzJ1hYyHcpFKemZou9d2ZqSlFu4JC+IUe2Gm5A=";
+            hash = "sha256-o8ev7kx8G+3vaa0JKX7hEMFl3xiMunDhaUv4FdK9EZs=";
           };
           cargoBuildFeatures = (old.cargoBuildFeatures or (old.buildFeatures or [ ])) ++ [
             "pci-hotplug"
-            "power-monitor-sysfs"
             "vtpm"
           ];
           buildInputs = (old.buildInputs or [ ]) ++ [ prev.dbus ];

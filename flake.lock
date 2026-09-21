@@ -248,19 +248,20 @@
     "ghaf-crosvm": {
       "flake": false,
       "locked": {
-        "lastModified": 1787513199,
-        "narHash": "sha256-BG/Fh5KcNUP8Q1ngKN6Z7q1fh4hAdQK07/1qYkouhwQ=",
-        "ref": "refs/heads/main",
-        "rev": "fba7ba3a796f9459107ee04e5a6599ac52f45954",
-        "revCount": 11724,
+        "lastModified": 1790020404,
+        "narHash": "sha256-U9mbQv1wEgUSQANchTYjc2rq8mnjQEV+/O/bGxdGTyQ=",
+        "ref": "tpm-port-newcrate",
+        "rev": "d533a4fb42148abc3975feedebdabc676f81460d",
+        "revCount": 11898,
         "submodules": true,
         "type": "git",
-        "url": "https://github.com/tiiuae/ghaf-crosvm"
+        "url": "https://github.com/z3r0cool90/crosvm-tpm2-swtpm-support"
       },
       "original": {
+        "ref": "tpm-port-newcrate",
         "submodules": true,
         "type": "git",
-        "url": "https://github.com/tiiuae/ghaf-crosvm"
+        "url": "https://github.com/z3r0cool90/crosvm-tpm2-swtpm-support"
       }
     },
     "ghaf-device-manager": {
