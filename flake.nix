@@ -96,7 +96,7 @@
     # This is a non-flake source input because nixpkgs supplies the package
     # expression and Rust dependencies.
     ghaf-crosvm = {
-      url = "git+https://github.com/z3r0cool90/crosvm-tpm2-swtpm-support?submodules=1&ref=tpm-port-newcrate";
+      url = "git+https://github.com/z3r0cool90/crosvm-tpm2-swtpm-support?submodules=1&ref=tpm-port-newcrate-v2";
       flake = false;
     };
 

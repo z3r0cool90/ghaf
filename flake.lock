@@ -248,17 +248,17 @@
     "ghaf-crosvm": {
       "flake": false,
       "locked": {
-        "lastModified": 1790020404,
-        "narHash": "sha256-U9mbQv1wEgUSQANchTYjc2rq8mnjQEV+/O/bGxdGTyQ=",
-        "ref": "tpm-port-newcrate",
-        "rev": "d533a4fb42148abc3975feedebdabc676f81460d",
+        "lastModified": 1790079834,
+        "narHash": "sha256-nULEszAnne3feREm+cZ2mgA2dFL+U+VYhi3omcIV5L4=",
+        "ref": "tpm-port-newcrate-v2",
+        "rev": "ba09aff1b8b52e75b6ca322e34d0b295eff5052d",
         "revCount": 11898,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/z3r0cool90/crosvm-tpm2-swtpm-support"
       },
       "original": {
-        "ref": "tpm-port-newcrate",
+        "ref": "tpm-port-newcrate-v2",
         "submodules": true,
         "type": "git",
         "url": "https://github.com/z3r0cool90/crosvm-tpm2-swtpm-support"
