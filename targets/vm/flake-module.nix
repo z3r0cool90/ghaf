@@ -134,9 +134,26 @@ let
 
                   # TPM passthrough to a protected guest goes through crosvm's
                   # virtio-tpm (--tpm-device); the QEMU path uses -tpmdev and is
-                  # wired separately in vm-tpm.nix. net-vm is the VM that holds
-                  # the LUKS key, so it is the one that needs the TPM.
+                  # wired separately in vm-tpm.nix.  net-vm holds the LUKS
+                  # key, and the remaining system VMs run under the same
+                  # hypervisor so that the protected guests are consistent.
                   vmConfig.sysvms.netvm.vmm = lib.mkIf withPkvm "crosvm";
+                  vmConfig.sysvms.adminvm.vmm = lib.mkIf withPkvm "crosvm";
+                  vmConfig.sysvms.audiovm.vmm = lib.mkIf withPkvm "crosvm";
+
+                  # Upstream gates tpm.passthrough.enable on storage
+                  # encryption, which these vm targets do not enable, so the
+                  # backend is switched on explicitly for the guests that are
+                  # exercised here.
+                  vmConfig.sysvms.netvm.extraModules = lib.mkIf withPkvm [
+                    { ghaf.virtualization.microvm.tpm.passthrough.enable = lib.mkForce true; }
+                  ];
+                  vmConfig.sysvms.adminvm.extraModules = lib.mkIf withPkvm [
+                    { ghaf.virtualization.microvm.tpm.passthrough.enable = lib.mkForce true; }
+                  ];
+                  vmConfig.sysvms.audiovm.extraModules = lib.mkIf withPkvm [
+                    { ghaf.virtualization.microvm.tpm.passthrough.enable = lib.mkForce true; }
+                  ];
 
                   microvm-host = {
                     enable = true;
