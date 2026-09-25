@@ -37,6 +37,7 @@ let
           swtpm socket --tpmstate dir=/var/lib/swtpm/${name}/state \
             --ctrl type=tcp,port=${toString basePort} \
             --server type=tcp,port=${toString (basePort + 1)} \
+            --flags not-need-init,startup-clear \
             --tpm2 \
             --log level=20
         '';

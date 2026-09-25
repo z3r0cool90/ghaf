@@ -11,6 +11,11 @@ let
   vmm = config.microvm.hypervisor;
   emulatedSocket =
     if cfg.emulated.runInVM then "vtpm.sock" else "/var/lib/swtpm/${cfg.emulated.name}/sock";
+  # QEMU drives the control socket and hands swtpm a data descriptor of its
+  # own.  Crosvm writes TPM commands straight to the server socket, so it is
+  # given the data channel instead.
+  emulatedDataSocket =
+    if cfg.emulated.runInVM then "vtpm-data.sock" else "/var/lib/swtpm/${cfg.emulated.name}/data.sock";
   inherit (lib)
     types
     mkEnableOption
@@ -117,8 +122,8 @@ in
     })
     (mkIf (cfg.emulated.enable && config.microvm.hypervisor == "crosvm") {
       microvm.crosvm.extraArgs = lib.mkAfter [
-        "--swtpm"
-        emulatedSocket
+        "--swtpm-socket"
+        emulatedDataSocket
       ];
     })
   ];

@@ -136,6 +136,8 @@ let
           mkdir -p /var/lib/swtpm/${name}/state
           swtpm socket --tpmstate dir=/var/lib/swtpm/${name}/state \
             --ctrl type=unixio,path=/var/lib/swtpm/${name}/sock \
+            --server type=unixio,path=/var/lib/swtpm/${name}/data.sock \
+            --flags not-need-init,startup-clear \
             --tpm2 \
             --log level=20
         '';
