@@ -140,6 +140,7 @@ let
                   vmConfig.sysvms.netvm.vmm = lib.mkIf withPkvm "crosvm";
                   vmConfig.sysvms.adminvm.vmm = lib.mkIf withPkvm "crosvm";
                   vmConfig.sysvms.audiovm.vmm = lib.mkIf withPkvm "crosvm";
+                  vmConfig.appvms.media.vmm = lib.mkIf withPkvm "crosvm";
 
                   # Upstream gates tpm.passthrough.enable on storage
                   # encryption, which these vm targets do not enable, so the
@@ -214,6 +215,7 @@ let
                             vcpu = 1;
                             borderColor = "#122263"; # Dark blue — security context indicator
                             waypipe.enable = false; # No guivm, so no waypipe
+                            vtpm.enable = true; # Emulated TPM through crosvm's virtio-tpm
                             applications = [
                               {
                                 name = "com.system76.CosmicReader";
